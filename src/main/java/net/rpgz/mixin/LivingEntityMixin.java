@@ -1,14 +1,5 @@
 package net.rpgz.mixin;
 
-import java.util.stream.StreamSupport;
-
-import net.shirojr.nemuelch.util.NeMuelchTags;
-import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.At;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityPose;
 import net.minecraft.entity.EntityType;
@@ -24,6 +15,7 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.particle.ParticleTypes;
+import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.ActionResult;
@@ -38,7 +30,14 @@ import net.rpgz.access.InventoryAccess;
 import net.rpgz.init.ConfigInit;
 import net.rpgz.init.TagInit;
 import net.rpgz.ui.LivingEntityScreenHandler;
-import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
+import net.shirojr.nemuelch.util.NeMuelchTags;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.stream.StreamSupport;
 
 @Mixin(LivingEntity.class)
 public abstract class LivingEntityMixin extends Entity implements InventoryAccess {
@@ -197,7 +196,10 @@ public abstract class LivingEntityMixin extends Entity implements InventoryAcces
 
     /**
      * Added additional ItemStack check from {@linkplain NeMuelchTags} to help out with the body drag feature from
-     * the <a href="https://github.com/JR1811/NeMuelch-1.18">NeMuelch-1.18</a> Fabric Mod.
+     * the <a href="https://github.com/JR1811/NeMuelch-1.18">NeMuelch-1.18</a> Fabric Mod.<br><br>
+     * For a more specific location of the interaction between <b><i>NeMuelch-1.18</i></b> and <b><i>RpgZ</i></b> compare
+     * this mixin method with the
+     * <a href="https://github.com/JR1811/NeMuelch-1.18/blob/17d92d16372d93b63856113589a8acc5a69af972/src/main/java/net/shirojr/nemuelch/mixin/ItemMixin.java#L31-L34">corresponding NeMuelch feature</a>.
      */
     @Override
     public ActionResult interactAt(PlayerEntity player, Vec3d hitPos, Hand hand) {
