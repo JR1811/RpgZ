@@ -2,6 +2,7 @@ package net.rpgz.mixin;
 
 import java.util.stream.StreamSupport;
 
+import net.shirojr.nemuelch.util.NeMuelchTags;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -73,15 +74,15 @@ public abstract class LivingEntityMixin extends Entity implements InventoryAcces
                     this.setPos(this.getX(), this.getY() - 0.1D, this.getZ());
                 }
             } else
-            // Water floating
-            if (this.world.containsFluid(box.offset(0.0D, box.getYLength(), 0.0D))) {
-                if (ConfigInit.CONFIG.surfacing_in_water)
-                    this.setPos(this.getX(), this.getY() + 0.03D, this.getZ());
-                if (this.canWalkOnFluid(this.world.getFluidState(this.getBlockPos())))
-                    this.setPos(this.getX(), this.getY() + 0.03D, this.getZ());
-                else if (this.world.containsFluid(box.offset(0.0D, -box.getYLength() + (box.getYLength() / 5), 0.0D)) && !ConfigInit.CONFIG.surfacing_in_water)
-                    this.setPos(this.getX(), this.getY() - 0.05D, this.getZ());
-            }
+                // Water floating
+                if (this.world.containsFluid(box.offset(0.0D, box.getYLength(), 0.0D))) {
+                    if (ConfigInit.CONFIG.surfacing_in_water)
+                        this.setPos(this.getX(), this.getY() + 0.03D, this.getZ());
+                    if (this.canWalkOnFluid(this.world.getFluidState(this.getBlockPos())))
+                        this.setPos(this.getX(), this.getY() + 0.03D, this.getZ());
+                    else if (this.world.containsFluid(box.offset(0.0D, -box.getYLength() + (box.getYLength() / 5), 0.0D)) && !ConfigInit.CONFIG.surfacing_in_water)
+                        this.setPos(this.getX(), this.getY() - 0.05D, this.getZ());
+                }
             info.cancel();
         }
 
@@ -143,10 +144,10 @@ public abstract class LivingEntityMixin extends Entity implements InventoryAcces
                     if (this.world.isRegionLoaded(blockPos, blockPos2))
                         if (!this.inventory.isEmpty()
                                 && (((!StreamSupport.stream(this.world.getBlockCollisions(this, checkBox).spliterator(), false).allMatch(VoxelShape::isEmpty)
-                                        || !StreamSupport.stream(this.world.getBlockCollisions(this, checkBoxThree).spliterator(), false).allMatch(VoxelShape::isEmpty))
-                                        && (!StreamSupport.stream(this.world.getBlockCollisions(this, checkBoxTwo).spliterator(), false).allMatch(VoxelShape::isEmpty)
-                                                || !StreamSupport.stream(this.world.getBlockCollisions(this, checkBoxThree).spliterator(), false).allMatch(VoxelShape::isEmpty)))
-                                        || this.isBaby() || (ConfigInit.CONFIG.drop_unlooted && this.deathTime > ConfigInit.CONFIG.drop_after_ticks))
+                                || !StreamSupport.stream(this.world.getBlockCollisions(this, checkBoxThree).spliterator(), false).allMatch(VoxelShape::isEmpty))
+                                && (!StreamSupport.stream(this.world.getBlockCollisions(this, checkBoxTwo).spliterator(), false).allMatch(VoxelShape::isEmpty)
+                                || !StreamSupport.stream(this.world.getBlockCollisions(this, checkBoxThree).spliterator(), false).allMatch(VoxelShape::isEmpty)))
+                                || this.isBaby() || (ConfigInit.CONFIG.drop_unlooted && this.deathTime > ConfigInit.CONFIG.drop_after_ticks))
                                 || this.getType().isIn(TagInit.EXCLUDED_ENTITIES) || ConfigInit.CONFIG.excluded_entities.contains(this.getType().toString().replace("entity.", "").replace(".", ":")))
 
                             this.inventory.clearToList().forEach(this::dropStack);
@@ -194,11 +195,15 @@ public abstract class LivingEntityMixin extends Entity implements InventoryAcces
             this.inventory.addStack(stack);
     }
 
+    /**
+     * Added additional ItemStack check from {@linkplain NeMuelchTags} to help out with the body drag feature from
+     * the <a href="https://github.com/JR1811/NeMuelch-1.18">NeMuelch-1.18</a> Fabric Mod.
+     */
     @Override
     public ActionResult interactAt(PlayerEntity player, Vec3d hitPos, Hand hand) {
         if (this.deathTime > 20) {
             if (!this.world.isClient)
-                if (!this.inventory.isEmpty()) {
+                if (!this.inventory.isEmpty() && !player.getStackInHand(hand).isIn(NeMuelchTags.Items.PULL_BODY_TOOLS)) {
                     if (player.isSneaking()) {
                         for (int i = 0; i < this.inventory.size(); i++)
                             player.getInventory().offerOrDrop(this.inventory.getStack(i));
