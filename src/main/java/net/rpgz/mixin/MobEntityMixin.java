@@ -49,7 +49,7 @@ public abstract class MobEntityMixin extends LivingEntity implements InventoryAc
 
     @Redirect(method = "dropEquipment", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/mob/MobEntity;dropStack(Lnet/minecraft/item/ItemStack;)Lnet/minecraft/entity/ItemEntity;"))
     private ItemEntity dropEquipmentMixin(MobEntity mobEntity, ItemStack itemStack) {
-        this.addingInventoryItems(itemStack);
+        this.rpgz$addingInventoryItems(itemStack);
         return null;
     }
 

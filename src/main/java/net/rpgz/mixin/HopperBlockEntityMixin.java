@@ -39,11 +39,11 @@ public abstract class HopperBlockEntityMixin implements InventoryAccess {
                     while (iterator.hasNext()) {
                         LivingEntity livingEntity = (LivingEntity) iterator.next();
                         if (livingEntity.isDead()) {
-                            if (((InventoryAccess) livingEntity).getInventory() != null) {
+                            if (((InventoryAccess) livingEntity).rpgz$getInventory() != null) {
                                 Direction direction = Direction.DOWN;
-                                info.setReturnValue(isInventoryEmpty(((InventoryAccess) livingEntity).getInventory(), direction) ? false
-                                        : getAvailableSlots(((InventoryAccess) livingEntity).getInventory(), direction).anyMatch((i) -> {
-                                            return extract(hopper, ((InventoryAccess) livingEntity).getInventory(), i, direction);
+                                info.setReturnValue(isInventoryEmpty(((InventoryAccess) livingEntity).rpgz$getInventory(), direction) ? false
+                                        : getAvailableSlots(((InventoryAccess) livingEntity).rpgz$getInventory(), direction).anyMatch((i) -> {
+                                            return extract(hopper, ((InventoryAccess) livingEntity).rpgz$getInventory(), i, direction);
                                         }));
                             }
                         }

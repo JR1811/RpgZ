@@ -7,7 +7,7 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.FlyingEntity;
 import net.minecraft.entity.mob.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
+//import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.inventory.SimpleInventory;
 import net.minecraft.item.ItemStack;
@@ -15,22 +15,21 @@ import net.minecraft.loot.LootTable;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextTypes;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
+//import net.minecraft.screen.SimpleNamedScreenHandlerFactory;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.text.LiteralText;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
+//import net.minecraft.text.LiteralText;
+//import net.minecraft.util.ActionResult;
+//import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
+//import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.world.World;
 import net.rpgz.access.InventoryAccess;
 import net.rpgz.init.ConfigInit;
 import net.rpgz.init.TagInit;
-import net.rpgz.ui.LivingEntityScreenHandler;
-import net.shirojr.nemuelch.util.NeMuelchTags;
+//import net.rpgz.ui.LivingEntityScreenHandler;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -182,30 +181,26 @@ public abstract class LivingEntityMixin extends Entity implements InventoryAcces
         if (isEntityInstanceOfMobEnity) {
             LootTable lootTable = this.world.getServer().getLootManager().getTable(this.getType().getLootTableId());
             LootContext.Builder builder = this.getLootContextBuilder(causedByPlayer, source);
-            lootTable.generateLoot(builder.build(LootContextTypes.ENTITY), this::addingInventoryItems);
+            lootTable.generateLoot(builder.build(LootContextTypes.ENTITY), this::rpgz$addingInventoryItems);
             info.cancel();
         }
 
     }
 
     @Override
-    public void addingInventoryItems(ItemStack stack) {
+    public void rpgz$addingInventoryItems(ItemStack stack) {
         if (!this.world.isClient && !stack.isEmpty())
             this.inventory.addStack(stack);
     }
 
     /**
-     * Added additional ItemStack check from {@linkplain NeMuelchTags} to help out with the body drag feature from
-     * the <a href="https://github.com/JR1811/NeMuelch-1.18">NeMuelch-1.18</a> Fabric Mod.<br><br>
-     * For a more specific location of the interaction between <b><i>NeMuelch-1.18</i></b> and <b><i>RpgZ</i></b> compare
-     * this mixin method with the
-     * <a href="https://github.com/JR1811/NeMuelch-1.18/blob/17d92d16372d93b63856113589a8acc5a69af972/src/main/java/net/shirojr/nemuelch/mixin/ItemMixin.java#L31-L34">corresponding NeMuelch feature</a>.
+     * This method has been moved to {@link EntityMixin EntityMixin} to help out with mod compatibility
      */
-    @Override
+/*  @Override
     public ActionResult interactAt(PlayerEntity player, Vec3d hitPos, Hand hand) {
         if (this.deathTime > 20) {
             if (!this.world.isClient)
-                if (!this.inventory.isEmpty() && !player.getStackInHand(hand).isIn(NeMuelchTags.Items.PULL_BODY_TOOLS)) {
+                if (!this.inventory.isEmpty()) {
                     if (player.isSneaking()) {
                         for (int i = 0; i < this.inventory.size(); i++)
                             player.getInventory().offerOrDrop(this.inventory.getStack(i));
@@ -220,7 +215,7 @@ public abstract class LivingEntityMixin extends Entity implements InventoryAcces
             return ActionResult.SUCCESS;
         }
         return super.interactAt(player, hitPos, hand);
-    }
+    }*/
 
     @Shadow
     protected LootContext.Builder getLootContextBuilder(boolean causedByPlayer, DamageSource source) {
@@ -238,7 +233,7 @@ public abstract class LivingEntityMixin extends Entity implements InventoryAcces
     }
 
     @Override
-    public SimpleInventory getInventory() {
+    public SimpleInventory rpgz$getInventory() {
         return this.inventory;
     }
 

@@ -5,7 +5,7 @@ import net.minecraft.item.ItemStack;
 
 public interface InventoryAccess {
 
-    public SimpleInventory getInventory();
+    public SimpleInventory rpgz$getInventory();
 
-    public void addingInventoryItems(ItemStack stack);
+    public void rpgz$addingInventoryItems(ItemStack stack);
 }
